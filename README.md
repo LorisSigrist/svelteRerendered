@@ -112,7 +112,7 @@ Here is an example on how to make a box spin.
 
 
 <Scene>
-    <Box color="normal" animations={[spin]}>
+    <Box color="normal" animations={[spin]}/>
 
     <!--Here I am skipping the Camera setup-->
 </Scene>
