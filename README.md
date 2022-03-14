@@ -1,4 +1,4 @@
-# svelte-rerendered
+# Svelte Rerendered
 
 
 >:warning: This is *not even close* to production ready. I just started working on this.
@@ -50,7 +50,7 @@ For more complex Scenes, you can also extract Elements into other Components. Th
 </script>
 
 <Sphere color="#000000" {radius}/>
-<Sphere color="#ff0000" wireframe radius=3 position={[radius,0,0]}/>
+<Sphere color="#ff0000" radius=3 position={[radius,0,0]}/>
 ```
 
 ```jsx
@@ -64,7 +64,7 @@ For more complex Scenes, you can also extract Elements into other Components. Th
 
 <Scene>
     <PerspectiveCamera/>
-    <TwoSpheres diameter=6/>
+    <TwoSpheres diameter={6}/>
 </Scene>
 ```
 
@@ -77,6 +77,58 @@ Placing a svelte-rerendered primitive outside of a Scene is undefined behaviour.
 ```jsx
 <Box on:click on:mouseover on:mouseleave etc/>
 ```
+
+
+### Animation
+Rerenders supports two types of animation. Property based, and skeletal animations. 
+
+#### Property based Animation
+Rerendered's Animation Api is heavily inspired by the Web Animations Api. Most of an objects properties can be animated using transitions.
+Here is an example on how to make a box spin.
+
+```jsx
+
+<script lang="ts">
+    import {Animation, Scene, Box} from 'svelte-rerendered';
+
+    //Create an Animation object
+    const spin = new Animation(
+        //Keyframes
+        [
+            {rotationX: -2 * Math.PI},
+            {rotationX: 0}
+        ],
+        //Options
+        {
+            duration: 1000, 
+            iterations: Infinity
+        }
+    );
+
+    onMount(()=>{
+        spin.play();
+    })
+</script>
+
+
+<Scene>
+    <Box color="normal" animations={[spin]}>
+
+    <!--Here I am skipping the Camera setup-->
+</Scene>
+
+<!--Animations can be played, paused, resumed and reset-->
+<button on:click={()=>spin.pause()}>Pause</button>
+<button on:click={()=>spin.resume()}>Resume</button>
+```
+
+You can pass the same instance of an animation to multiple objects. Playing, pausing etc. will affect all animation users. If you want them to be independent, you will have to use multiple instances. Maybe write a factory?
+
+In addition to these animations, you can also pass animations to a Primitives "in" and "out" properties. These will be triggered when the object is mounted/unmounted. The apropriate svelte-lifecycle hooks (on:introstart etc.) are available. :warning: Be careful with iteration count, as the component will not unmount until they have finished!
+
+
+#### Skeletal Animations
+TODO
 
 ## Documentation & Examples
 Will be added once the API has settled in. Currently everything is subject to change.
